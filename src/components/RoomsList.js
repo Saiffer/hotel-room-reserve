@@ -1,6 +1,6 @@
 import React from 'react'
-
-export default function RoomsList() {
+import Room from './Room';
+export default function RoomsList({rooms}) {
     return (
         <div>
             hello from roomlist
