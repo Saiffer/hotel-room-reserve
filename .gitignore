@@ -141,4 +141,4 @@ yarn-debug.log*
 yarn-error.log*
 
 #contentful api keys
-/contentful
+/src/contentful
