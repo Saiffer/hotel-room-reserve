@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import items from './data';
+import Client from './Contentful';
 
 const RoomContext = React.createContext();
 
@@ -19,26 +19,41 @@ class RoomProvider extends Component {
          breakfast: false,
          pets: false
     };
+
+    getData = async () => {
+        try {
+            let response = await Client.getEntries({
+            });
+            console.log(response.items);
+            let rooms = this.formatData(response.items);
+            let featuredRooms = rooms.filter(room => room.featured === true);
+            let maxPrice = Math.max(...rooms.map(item => item.price));
+            let maxSize = Math.max(...rooms.map(item => item.size));
+            this.setState({
+                rooms: rooms, 
+                featuredRooms: featuredRooms, 
+                sortedRooms:rooms, 
+                loading: false,
+                price: maxPrice,
+                size: maxSize
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
     
     componentDidMount() {
-        let rooms = this.formatData(items);
-        let featuredRooms = rooms.filter(room => room.featured === true);
-        let maxPrice = Math.max(...rooms.map(item => item.price));
-        let maxSize = Math.max(...rooms.map(item => item.size));
-        this.setState({
-            rooms: rooms, 
-            featuredRooms: featuredRooms, 
-            sortedRooms:rooms, 
-            loading: false,
-            price: maxPrice,
-            size: maxSize
-        })
+       this.getData();
     };
 
     formatData(items) {
+        console.log(items);
         let tempItems = items.map(item => {
             let id = item.sys.id;
-            let images = item.fields.images.map(image => image.fields.file.url);
+            console.log(item.fields.images)
+            let images = item.fields.images.map((image) => {
+                return image.fields.file.url
+            });
 
             let room = {...item.fields, images, id};
             return room;
